@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>Add Post</title>
+</head>
+<body>
+<div id="content">
+
+
+    <div class="w-full p-4 text-center bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+        <h5 class="mb-2 text-3xl font-bold text-gray-900 dark:text-white">ADD NEW POST</h5>
+        <p class="mb-5 text-base text-gray-500 sm:text-lg dark:text-gray-400">Create a new post</p>
+        <div class="items-center justify-center space-y-4 sm:flex sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">
+            <form th:action="@{'/user/post/create'}" th:object="${post}" method="post" enctype="multipart/form-data" class="w-full space-y-6" novalidate>
+                <!-- Title Field with Validation -->
+                <div>
+                    <input
+                            type="text"
+                            th:field="*{title}"
+                            placeholder="Title"
+                            class="w-full p-3 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="text-red-600 px-1 py-2">Title Error</span>
+                </div>
+                <!-- Content Field with Validation -->
+                <div>
+                <textarea
+                        th:field="*{content}"
+                        placeholder="Body"
+                        class="w-full p-3 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 h-48"
+                ></textarea>
+                    <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="text-red-600 px-1 py-2">Content Error</span>
+                </div>
+
+                <!-- Category Dropdown -->
+                <div th:if="${categories != null}">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+                    <select
+                            th:field="*{categoryId}"
+                            class="w-full p-3 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                    >
+                        <option value="" disabled selected>Select a category</option>
+                        <option th:each="category : ${categories}" th:value="${category.category_id}" th:text="${category.category_title}"></option>
+                    </select>
+                </div>
+
+                <!-- File Upload Field -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Upload Image</label>
+                    <input
+                            id="image-file-input"
+                            type="file"
+                            th:field="*{file}"
+                            accept="image/*"
+                            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <img class="max-h-52" src="" id="upload-image-preview" alt="">
+                </div>
+
+                <!-- Hidden User ID Field -->
+                <div th:if="${loggedInUser}">
+                    <input type="hidden" name="userId" th:value="${loggedInUser.userId}" />
+                </div>
+
+                <button
+                        type="submit"
+                        class="w-full p-3 text-white bg-green-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm dark:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                    Create Post
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+
+</div>
+<script src="/js/admin.js"></script>
+<script>
+    console.log("Home page");
+</script>
+</body>
+</html>

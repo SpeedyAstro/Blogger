@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <title>Post Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .post-details {
+            margin-bottom: 50px;
+        }
+
+        .post-image {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .comments-section {
+            margin-top: 50px;
+        }
+
+        .comment {
+            margin-bottom: 30px;
+        }
+
+        .comment-form {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+<div id="content">
+    <div class="content">
+        <div class="container">
+            <div class="post-details">
+                <h1 class="text-center mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+                    th:text="${post.title}">Title</h1>
+                <br>
+                <img class="post-image h-auto max-w-lg mx-auto" th:src="@{${post.image}}" alt="image description">
+                <br>
+<!--                <img class="w-10 h-10 rounded-full" th:src="@{${post.user.profilePic}}" alt="User profile picture">-->
+                <h5 class="text-center text-gray-500 dark:text-gray-400 mt-4"
+                    th:text="'Published on ' + ${#dates.format(post.postAdded, 'yyyy MMMM dd')} + ' by ' + ${post.user.firstName}">
+                    Creation date and by whom
+                </h5>
+                <p class="mt-4" th:text="${post.content}">Post content</p>
+                <div class="text-right" sec:authorize="isAuthenticated()" th:if="${isOwner}">
+                    <a th:href="@{'/editPost/{id}'(id=${post.postId})}">
+                        <button class="btn btn-primary">Edit</button>
+                    </a>
+                </div>
+            </div>
+
+            <br>
+            <hr
+                    class="my-5 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+            <br>
+
+            <div th:if="${loggedInUser}">
+                <div class="mx-7 comments-section">
+
+
+                    <form th:action="@{'/comment/' + ${post.postId}}" method="post" th:object="${comment}">
+                        <div class="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600">
+                            <div class="px-4 py-2 bg-white rounded-t-lg dark:bg-gray-800">
+                                <label for="comment" class="sr-only">Your comment</label>
+                                <textarea id="comment" rows="4" th:field="*{content}"
+                                          class="w-full px-0 text-sm text-gray-900 bg-white border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
+                                          placeholder="Write a comment..." required></textarea>
+                            </div>
+                            <div class="flex items-center justify-between px-3 py-2 border-t dark:border-gray-600">
+                                <button type="submit"
+                                        class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">
+                                    Post comment
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <p class="ms-auto text-xs text-gray-500 dark:text-gray-400">Remember, contributions to this topic
+                        should follow our <a href="#" class="text-blue-600 dark:text-blue-500 hover:underline">Community
+                            Guidelines</a>.</p>
+                </div>
+            </div>
+            <div th:unless="${loggedInUser}">
+                <p class="text-gray-500 dark:text-gray-400">You must be <a href="/login" class="font-semibold text-gray-900 underline dark:text-white decoration-green-500">logged in </a> to post a comment.</p>
+            </div>
+            <br>
+            <hr
+                    class="my-5 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+            <br>
+            <div class="comments">
+                <h2 th:text="'Comments ' + ${post.comments.size()}">Comments</h2>
+                <hr
+                        class="my-5 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+                <br>
+
+                <div class="comment" th:each="comment : ${post.comments}">
+                    <div id="toast-default" class="relative flex items-start w-full p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800" role="alert">
+                        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-blue-500 bg-blue-100 rounded-lg dark:bg-blue-800 dark:text-blue-200">
+                            <img class="w-10 h-10 rounded-full" th:src="@{${comment.user.profilePic}}" alt="User profile picture">
+                            <span class="sr-only">User icon</span>
+                        </div>
+                        <div class="flex flex-col ms-3">
+                            <div class="text-xs text-gray-400 dark:text-gray-500" th:text="'Commented on ' + ${#dates.format(comment.commentDate, 'yyyy-MM-dd')} + ' by ' + ${comment.user.firstName}"></div>
+                            <div class="text-sm font-normal mt-1" th:text="${comment.content}">This is the comment content.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
