@@ -8,6 +8,8 @@ import in.astro.helper.MessageType;
 import in.astro.helper.SessionHelper;
 import in.astro.model.UserForm;
 import in.astro.repository.CommentRepository;
+import in.astro.repository.PostRepository;
+import in.astro.repository.UserRepository;
 import in.astro.service.IPostService;
 import in.astro.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -32,6 +34,12 @@ public class PageController {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
 
     @RequestMapping("/home")
@@ -92,7 +100,7 @@ public class PageController {
     public String getPost(@PathVariable Long id, Model model, Authentication authentication){
         Comment comment = new Comment();
         String authUsername = "anonymousUser";
-        if (authUsername != null) {
+        if (authentication != null) {
             authUsername = SessionHelper.getEmailOfLoggedInUser(authentication);
         }
         Post post = postService.getPostById(id);
@@ -108,22 +116,20 @@ public class PageController {
     }
 
     @PostMapping("/comment/{id}")
-    public String createComment(@PathVariable Long id,@ModelAttribute Comment comment, Model model, Authentication authentication) {
-        System.out.println("comment: "+comment.getContent());
-        System.out.println(id);
+    public String createComment(@PathVariable Long id,@ModelAttribute Comment comment, Authentication authentication) {
         Post post = postService.getPostById(id);
         if (post != null){
             System.out.println("post found");
             String username = SessionHelper.getEmailOfLoggedInUser(authentication);
             if (username != null){
-                System.out.println(username);
                 User user = userService.getUserByEmail(username);
                 if (user != null){
-                    System.out.println("user found");
-                    comment.setUser(user);
-                    comment.setPost(post);
-                    commentRepository.save(comment);
-                    System.out.println("comment saved");
+                    Comment newComment = new Comment();
+                    newComment.setContent(comment.getContent());
+                    newComment.setPost(post);
+                    newComment.setUser(user);
+                    System.out.println(comment.getContent());
+                    commentRepository.save(newComment);
                 }
             }
         }

@@ -17,12 +17,17 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "content", nullable = false) // Ensure the column name is correct
     private String content;
+
     @ManyToOne
-    @JoinColumn(name = "post_Id")
+    @JoinColumn(name = "post_id") // Ensure the column name is correct
     private Post post;
+
     @ManyToOne
+    @JoinColumn(name = "user_id") // Ensure the column name is correct
     private User user;
+
     @CreationTimestamp
     private Date commentDate;
 
