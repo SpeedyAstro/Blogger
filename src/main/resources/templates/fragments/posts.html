@@ -1,5 +1,16 @@
 <div th:fragment="posts(posts)">
 
+    <div th:if="${categories != null}">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+        <select
+
+                class="w-full p-3 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600"
+        >
+            <option value="" disabled selected>Select a category</option>
+            <option th:each="category : ${categories}" th:value="${category.category_id}" th:text="${category.category_title}"></option>
+        </select>
+    </div>
+
     <div class="posts_wrapper">
         <div class="post" th:each="post : ${posts}">
 
@@ -46,7 +57,7 @@
 <!--                    <p class="mb-5 text-gray-500 dark:text-gray-400">It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.</p>-->
                     <aside class="flex items-center mt-3">
                         <a th:href="@{'/post/' + ${post.postId}}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
-                            Comments
+                            Comments <span class="ms-1 text-gray-500 dark:text-gray-400" th:text="'('+${post.comments.size()}+')'">0</span>
                         </a>
 <!--                        <a href="#" class="inline-flex items-center text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 group ms-5">-->
 <!--                            <svg class="w-3.5 h-3.5 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">-->
