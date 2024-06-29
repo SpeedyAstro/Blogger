@@ -4,11 +4,16 @@ import in.astro.entity.Category;
 import in.astro.entity.Post;
 import in.astro.entity.User;
 import in.astro.model.PostForm;
+import in.astro.payload.PostResponse;
 import in.astro.repository.CategoryRepository;
 import in.astro.repository.PostRepository;
 import in.astro.repository.UserRepository;
 import in.astro.service.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -41,6 +46,24 @@ public class PostServiceImpl implements IPostService {
     @Override
     public List<Post> getAllPosts() {
         return postRepository.findAll();
+    }
+
+    @Override
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        System.out.println("************"+pageDetails);
+        Page<Post> postPage = postRepository.findAll(pageDetails);
+        List<Post> posts = postPage.getContent();
+        return  PostResponse.builder()
+                .content(posts)
+                .pageSize(postPage.getSize())
+                .totalPages(postPage.getTotalPages())
+                .totalElements(postPage.getTotalElements())
+                .lastPage(postPage.isLast())
+                .pageNumber(postPage.getNumber())
+                .build();
     }
 
     @Override

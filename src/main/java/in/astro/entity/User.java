@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"posts", "comments", "likedPosts"})
 @Builder
 @Table(name = "users")
 public class User implements UserDetails {
@@ -29,7 +30,7 @@ public class User implements UserDetails {
     private String profilePic;
     @Column(length = 10000)
     private String about;
-//    private List<String> socialLinks = new ArrayList<>();
+    //    private List<String> socialLinks = new ArrayList<>();
     @Getter(AccessLevel.NONE)
     private boolean enabled = true;
     private boolean emailVerified = false;

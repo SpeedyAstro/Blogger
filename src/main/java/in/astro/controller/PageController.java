@@ -1,5 +1,6 @@
 package in.astro.controller;
 
+import in.astro.config.AppConstants;
 import in.astro.entity.Comment;
 import in.astro.entity.Post;
 import in.astro.entity.User;
@@ -7,6 +8,7 @@ import in.astro.helper.Message;
 import in.astro.helper.MessageType;
 import in.astro.helper.SessionHelper;
 import in.astro.model.UserForm;
+import in.astro.payload.PostResponse;
 import in.astro.repository.CommentRepository;
 import in.astro.repository.PostRepository;
 import in.astro.repository.UserRepository;
@@ -43,10 +45,16 @@ public class PageController {
 
 
     @RequestMapping("/home")
-    public String home(Model model){
-        List<Post> allPosts = postService.getAllPosts();
-        model.addAttribute("posts", allPosts);
-        System.out.println("home page");
+    public String home(
+            @RequestParam(name = "pageNumber",defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize",defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+            @RequestParam(name = "sortBy",defaultValue = AppConstants.SORT_BY_DATE, required = false) String sortBy,
+            @RequestParam(name = "sortOrder",defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder,
+            Model model){
+        System.out.println("Page Number: "+pageNumber);
+        PostResponse response = postService.getAllPosts(pageNumber, pageSize, sortBy, sortOrder);
+        List<Post> posts = postService.getAllPosts();
+        model.addAttribute("response", response);
         return "home";
     }
 

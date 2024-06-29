@@ -1,10 +1,7 @@
 package in.astro.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.*;
 
@@ -13,6 +10,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"comments", "likedBy", "category"})
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
