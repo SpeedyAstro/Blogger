@@ -1,18 +1,31 @@
-<div th:fragment="posts(posts)">
+<div th:fragment="posts(response)">
 
-    <div th:if="${categories != null}">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
-        <select
-
-                class="w-full p-3 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600"
-        >
-            <option value="" disabled selected>Select a category</option>
-            <option th:each="category : ${categories}" th:value="${category.category_id}" th:text="${category.category_title}"></option>
-        </select>
-    </div>
+    <form th:action="@{/your-endpoint}" method="post" class="flex justify-center items-center mt-4 mb-4">
+        <div th:if="${categories != null}">
+<!--            <h1 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-center">Category</h1>-->
+            <div class="flex items-center justify-center space-x-2">
+                <select
+                        name="category"
+                        class="w-48 p-2 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600"
+                >
+                    <option value="" disabled selected>Select a category</option>
+                    <option th:each="category : ${categories}" th:value="${category.category_id}" th:text="${category.category_title}"></option>
+                </select>
+                <button
+                        type="submit"
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900"
+                >
+                    Submit
+                </button>
+            </div>
+        </div>
+    </form>
+<hr
+        class="my-5 h-px border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:via-neutral-400" />
+    <br>
 
     <div class="posts_wrapper">
-        <div class="post" th:each="post : ${posts}">
+        <div class="post" th:each="post : ${response.content}">
 
 
 
@@ -54,17 +67,17 @@
                         </div>
                     </div>
                     <p class="mb-2 text-gray-500 dark:text-gray-400" th:text="${post.content}"></p>
-<!--                    <p class="mb-5 text-gray-500 dark:text-gray-400">It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.</p>-->
+                    <!--                    <p class="mb-5 text-gray-500 dark:text-gray-400">It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.</p>-->
                     <aside class="flex items-center mt-3">
                         <a th:href="@{'/post/' + ${post.postId}}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
                             Comments <span class="ms-1 text-gray-500 dark:text-gray-400" th:text="'('+${post.comments.size()}+')'">0</span>
                         </a>
-<!--                        <a href="#" class="inline-flex items-center text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 group ms-5">-->
-<!--                            <svg class="w-3.5 h-3.5 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">-->
-<!--                                <path d="M11.955 2.117h-.114C9.732 1.535 6.941.5 4.356.5c-1.4 0-1.592.526-1.879 1.316l-2.355 7A2 2 0 0 0 2 11.5h3.956L4.4 16a1.779 1.779 0 0 0 3.332 1.061 24.8 24.8 0 0 1 4.226-5.36l-.003-9.584ZM15 11h2a1 1 0 0 0 1-1V2a2 2 0 1 0-4 0v8a1 1 0 0 0 1 1Z"/>-->
-<!--                            </svg>-->
-<!--                            Not helpful-->
-<!--                        </a>-->
+                        <!--                        <a href="#" class="inline-flex items-center text-sm font-medium text-blue-600 hover:underline dark:text-blue-500 group ms-5">-->
+                        <!--                            <svg class="w-3.5 h-3.5 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">-->
+                        <!--                                <path d="M11.955 2.117h-.114C9.732 1.535 6.941.5 4.356.5c-1.4 0-1.592.526-1.879 1.316l-2.355 7A2 2 0 0 0 2 11.5h3.956L4.4 16a1.779 1.779 0 0 0 3.332 1.061 24.8 24.8 0 0 1 4.226-5.36l-.003-9.584ZM15 11h2a1 1 0 0 0 1-1V2a2 2 0 1 0-4 0v8a1 1 0 0 0 1 1Z"/>-->
+                        <!--                            </svg>-->
+                        <!--                            Not helpful-->
+                        <!--                        </a>-->
                     </aside>
                 </div>
             </article>
@@ -74,5 +87,38 @@
             <br>
         </div>
     </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex justify-center mt-8">
+        <nav aria-label="Page navigation example">
+            <ul class="inline-flex -space-x-px text-base h-10">
+                <!-- Previous Button -->
+                <li th:if="${response.pageNumber > 0}">
+                    <a th:href="@{'/home?pageNumber=' + ${response.pageNumber - 1} + '&pageSize=' + ${response.pageSize}}"
+                       class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                </li>
+                <li th:if="${response.pageNumber == 0}">
+                    <span class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">Previous</span>
+                </li>
+
+                <!-- Page Numbers -->
+                <li th:each="i : ${#numbers.sequence(0, response.totalPages - 1)}">
+                    <a th:href="@{'/home?pageNumber=' + ${i} + '&pageSize=' + ${response.pageSize}}"
+                       th:classappend="${i == response.pageNumber} ? 'text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white' : 'leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'"
+                       class="flex items-center justify-center px-4 h-10" th:text="${i + 1}">1</a>
+                </li>
+
+                <!-- Next Button -->
+                <li th:if="${!response.lastPage}">
+                    <a th:href="@{'/home?pageNumber=' + ${response.pageNumber + 1} + '&pageSize=' + ${response.pageSize}}"
+                       class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                </li>
+                <li th:if="${response.lastPage}">
+                    <span class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">Next</span>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
 
 </div>

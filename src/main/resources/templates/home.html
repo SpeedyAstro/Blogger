@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html
         lang="en"
-        th:replace="~{base :: parent(~{::#content},~{::title},~{::script})}"
+        th:replace="~{base :: parent(~{::#content}, ~{::title}, ~{::script})}"
 >
 <head>
     <title>Home page</title>
@@ -9,7 +9,7 @@
 <body>
 <div th:replace="message::messagebox"></div>
 <div id="content">
-    <div th:replace="/fragments/posts :: posts(posts=${posts})"></div>
+    <div th:replace="/fragments/posts :: posts(response=${response})"></div>
 </div>
 
 <script>
